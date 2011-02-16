@@ -19,7 +19,7 @@ $(document).ready(function(){
 			
 			case 'online':
 			    offline = false;
-				typer.type('Я в сети.');
+				typer.type('Я в сети и готов пообщаться.');
 				messager.get();
 				break;	
 			default:
