@@ -15,11 +15,12 @@ $(document).ready(function(){
 			case 'offline':
 			    offline = true;
 				typer.type('Упс, я в офлайне, но вы можете написать мне по электронной почте на <a href="mailto:k@kosteshman.com">k@kosteshman.com</a>');
+				typer.type('Или оставьте мне сообщение прямо здесь - я прочитаю его, когда доберусь до почты. Так что не забудьте оставить свои контакты, чтобы я смог вам ответить');
 				break;
 			
 			case 'online':
 			    offline = false;
-				typer.type('Я в сети и скорее всего готов пообщаться. Пишите.');
+				typer.type('Я в сети и готов пообщаться. Пишите.');
 				messager.get();
 				break;	
 			default:

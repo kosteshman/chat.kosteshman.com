@@ -20,15 +20,16 @@ import com.google.appengine.api.xmpp.XMPPServiceFactory;
 public class SendMessage extends HttpServlet {
 	public void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
+		
 		String ret = "";
-		HttpSession session = req.getSession();
-		String jid_str = (String) session.getAttribute("bot_jid");
-		if(jid_str != null){
-			JID bot_jid = new JID(jid_str);
-			JID me = new JID("gusev.k.n@gmail.com");
-			String msg_text = req.getParameter("message");
-			XMPPService xmpp = XMPPServiceFactory.getXMPPService();
-			if(xmpp.getPresence(me).isAvailable()){
+		String msg_text = req.getParameter("message");
+		JID me = new JID("gusev.k.n@gmail.com");
+		XMPPService xmpp = XMPPServiceFactory.getXMPPService();
+		if(xmpp.getPresence(me).isAvailable()){
+			HttpSession session = req.getSession();
+			String jid_str = (String) session.getAttribute("bot_jid");
+			if(jid_str != null){
+				JID bot_jid = new JID(jid_str);
 				Message mes = new MessageBuilder()
 				.withBody(msg_text)
 				.withFromJid(bot_jid)
@@ -37,26 +38,25 @@ public class SendMessage extends HttpServlet {
 				xmpp.sendMessage(mes);
 				ret = "ok";
 			}else{
-				try {
-					Properties props = new Properties();
-					Session mail_session = Session.getDefaultInstance(props);
-					javax.mail.Message mail_message = new MimeMessage(mail_session);
-					mail_message.setFrom(new InternetAddress("mailbot@kosteshman.com", "kosteshman's mail bot"));
-					mail_message.addRecipient(javax.mail.Message.RecipientType.TO,
-                            new InternetAddress("gusev.k.n@gmail.com", "Gusev Konstantin"));
-					mail_message.setSubject("Кто-то пишет с kosteshman.com");
-					mail_message.setText(msg_text);
-					Transport.send(mail_message);
-					ret = "mail";
-				} catch (AddressException e){
-					ret = e.getMessage();
-				} catch (MessagingException e) {
-					ret = e.getMessage();
-				}
-				
+				ret = "nobot";
 			}
 		}else{
-			ret = "nobot";
+			try {
+				Properties props = new Properties();
+				Session mail_session = Session.getDefaultInstance(props);
+				javax.mail.Message mail_message = new MimeMessage(mail_session);
+				mail_message.setFrom(new InternetAddress("k@kosteshman.com", "kosteshman's mail bot"));
+				mail_message.addRecipient(javax.mail.Message.RecipientType.TO,
+                        new InternetAddress("gusev.k.n@gmail.com", "Gusev Konstantin"));
+				mail_message.setSubject("offline message from kosteshman.com");
+				mail_message.setText(msg_text);
+				Transport.send(mail_message);
+				ret = "mail";
+			} catch (AddressException e){
+				ret = e.getMessage();
+			} catch (MessagingException e) {
+				ret = e.getMessage();
+			}
 		}
 		
 		resp.setContentType("text/plain");
