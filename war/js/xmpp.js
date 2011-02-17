@@ -66,11 +66,15 @@ $(document).ready(function(){
 	  	
 		if(e.which == 13){
 			var txt = $('#typer').text();
+			
 			var str = $('<div class="msg" />').append('<span>> </span>').append(txt);
 			$('#texter').append(str);
 			$('#typer').html('').append(migalka); 
 			$('#input').val('');
 			$(window).scrollTo('max');
+			if(offline){
+				txt+=' Come from: '+ref;	
+			}
 			messager.send(txt, function(message_status){
 				switch(message_status){
 					case 'mail':
